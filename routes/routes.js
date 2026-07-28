@@ -1,46 +1,54 @@
-const express = require('express')
+// External Module
+const express = require('express');
+const bodyParser = require('body-parser');
 
-
-
-const userRouter = require('./user_router');
 const app = express();
-const port = 3000;
 
-app.use(express.urlencoded());
-app.use(userRouter);
+app.use((req, res, next) => {
+  console.log("First Dummy Middleware", req.url, req.method);
+  next();
+});
 
-//app.use for all page and path wherever you clicked
-//this is only show you this msg
-// app.use((req,res,next)=>{
-//    console.log(req.url , req.method);
-//    res.send(`wlcome bro
-//     <a href="/add-home">add home </a>
-//     `)
-// })
+app.use((req, res, next) => {
+  console.log("Second Dummy Middleware", req.url, req.method);
+  next();
+});
 
-// app.get("/",(req,res,next)=>{
-//   console.log(req.body)
-//   res.send(`<h1>welcome to home page</h1>
-//     <a href="contact-page">contact-page</a>
-//     `)
-// })
+// app.use((req, res, next) => {
+//   console.log("Third Middleware", req.url, req.method);
+//   res.send("<h1>Welcome to Complete Coding</h1>");
+// });
 
-app.get("/contact-page",(req,res,next)=>{
-  console.log(req.body)
-  res.send(`<h1>Contact page</h1>
-    <form method="POST" action="/contact-page">
-      <input type="text" name="name" placeholder="Your name" />
-      <button type="submit">Submit</button>
+app.get("/", (req, res, next) => {
+  console.log("Handling / for GET");
+  res.send(`home page`)
+  next();
+});
+app.get("/contact-us", (req, res, next) => {
+  console.log("Handling /contact-us for GET", req.url, req.method);
+  res.send(
+    `<h1>Please give your details here</h1>
+    <form action="/contact-us" method="POST">
+      <input type="text" name="name" placeholder="Enter your name" />
+      <input type="email" name="email" placeholder="Enter your Email" />
+      <input type="Submit" />
     </form>
-    `)
+    `);
+});
+
+app.post("/contact-us", (req, res, next) => {
+  console.log("First handling", req.url, req.method, req.body);
+  next();
 })
 
-app.post("/contact-page", (req, res) => {
-  console.log(req.body);
-  res.send(`<h1>Thanks ${req.body.name}</h1><a href="/">Home</a>`);
+app.use(bodyParser.urlencoded());
+
+app.post("/contact-us", (req, res, next) => {
+  console.log("Handling /contact-us for POST", req.url, req.method, req.body);
+  res.send(`<h1>We will contact you shortly</h1>`);
 })
 
-
-app.listen(port , ()=>{
-  console.log(`http://localhost:${port}`);
-})
+const PORT = 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on address http://localhost:${PORT}`);
+});

@@ -5,6 +5,8 @@ const bodyParser = require('body-parser');
 const app = express();
 const PORT = 3000;
 
+//this 2 run before any routes
+//it only works when the content-tyoe is app/json
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
